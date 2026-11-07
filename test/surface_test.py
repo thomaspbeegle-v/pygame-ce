@@ -177,6 +177,25 @@ class SurfaceTypeTest(unittest.TestCase):
         finally:
             pygame.display.quit()
 
+    def test_masks_without_depth(self):
+        size = (10, 10)
+        masks = (0xFF0000, 0x00FF00, 0x0000FF, 0)
+        self.assertRaises(TypeError, pygame.Surface, size, masks=masks)
+        self.assertRaises(TypeError, pygame.Surface, size, 0, masks=masks)
+        self.assertRaises(TypeError, pygame.Surface, size, masks=None)
+        self.assertRaises(TypeError, pygame.Surface, size, 0, masks=None)
+        self.assertRaises(TypeError, pygame.Surface, size, depth=32, masks=None)
+        self.assertRaises(TypeError, pygame.Surface, size, 0, 32, None)
+
+        surf = pygame.Surface((10, 10))
+        self.assertRaises(TypeError, surf.__init__, (20, 20), masks=masks)
+        self.assertEqual(surf.get_size(), (10, 10))
+
+        pygame.Surface(size, depth=32, masks=masks)
+        pygame.Surface(size, 0, 32, masks)
+        pygame.Surface(size, depth=32)
+        pygame.Surface(size, 0, 32)
+
     def test_masks(self):
         def make_surf(bpp, flags, masks):
             pygame.Surface((10, 10), flags, bpp, masks)
