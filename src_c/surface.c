@@ -490,6 +490,15 @@ surface_init(pgSurfaceObject *self, PyObject *args, PyObject *kwds)
         return -1;
     }
 
+    if (masks == Py_None) {
+        PyErr_SetString(PyExc_TypeError, "masks argument cannot be None");
+        return -1;
+    }
+    if (masks && !depth) {
+        PyErr_SetString(PyExc_TypeError, "masks argument requires depth");
+        return -1;
+    }
+
     if (PySequence_Check(size) && PySequence_Length(size) == 2) {
         if ((!pg_IntFromObjIndex(size, 0, &width)) ||
             (!pg_IntFromObjIndex(size, 1, &height))) {
